@@ -153,6 +153,28 @@ public class DependencyGraphNode<T extends ISystemModelElement> extends
 			e.getTargetWeight().incrementAndGet();
 		}
 	}
+	
+	public void addOutgoingDependencyByFudan(final DependencyGraphNode<T> destination, final boolean isAssumed, final TraceInformation origin,
+			final IOriginRetentionPolicy originPolicy, final int newWeightValue) {
+		synchronized (this) {
+			final Map<Integer, WeightedBidirectionalDependencyGraphEdge<T>> relevantDependencies = // NOPMD(UseConcurrentHashMap)
+			isAssumed ? this.assumedOutgoingDependencies : this.outgoingDependencies; // NOCS (inline ?)
+
+			WeightedBidirectionalDependencyGraphEdge<T> e = relevantDependencies.get(destination.getId());
+			if (e == null) {
+				e = new WeightedBidirectionalDependencyGraphEdge<T>(this, destination, origin, originPolicy);
+
+				if (isAssumed) {
+					e.setAssumed();
+				}
+
+				relevantDependencies.put(destination.getId(), e);
+			} else {
+				originPolicy.handleOrigin(e, origin);
+			}
+			e.getTargetWeight().set(newWeightValue);
+		}
+	}
 
 	/**
 	 * Adds an incoming dependency to this node. The dependency will be marked as not assumed.
@@ -194,6 +216,23 @@ public class DependencyGraphNode<T extends ISystemModelElement> extends
 				originPolicy.handleOrigin(e, origin);
 			}
 			e.getSourceWeight().incrementAndGet();
+		}
+	}
+	
+	public void addIncomingDependencyByFudan(final DependencyGraphNode<T> source, final boolean isAssumed, final TraceInformation origin,
+			final IOriginRetentionPolicy originPolicy, int weight) {
+		synchronized (this) {
+			final Map<Integer, WeightedBidirectionalDependencyGraphEdge<T>> relevantDependencies = // NOPMD(UseConcurrentHashMap)
+			isAssumed ? this.assumedIncomingDependencies : this.incomingDependencies; // NOCS (inline ?)
+
+			WeightedBidirectionalDependencyGraphEdge<T> e = relevantDependencies.get(source.getId());
+			if (e == null) {
+				e = new WeightedBidirectionalDependencyGraphEdge<T>(this, source, origin, originPolicy);
+				relevantDependencies.put(source.getId(), e);
+			} else {
+				originPolicy.handleOrigin(e, origin);
+			}
+			e.getTargetWeight().set(weight);
 		}
 	}
 

@@ -18,7 +18,9 @@ package kieker.tools.traceAnalysis.filter.visualization.dependencyGraph;
 
 import kieker.common.util.signature.Signature;
 import kieker.tools.traceAnalysis.filter.visualization.AbstractGraphFormatter;
+import kieker.tools.traceAnalysis.filter.visualization.util.dot.TSSCommonUtils;
 import kieker.tools.traceAnalysis.systemModel.Operation;
+import kieker.tools.traceAnalysis.systemModel.util.AllocationComponentOperationPair;
 
 /**
  * Abstract for formatters for operation-level dependency graph.
@@ -50,9 +52,21 @@ public abstract class AbstractOperationDependencyGraphFormatter<T extends Abstra
 
 	protected String createOperationNodeLabel(final Operation operation, final DependencyGraphNode<?> node) {
 		final StringBuilder builder = new StringBuilder();
+		
+		if (TSSCommonUtils.isShowNodeIndex()) {
+			
+			builder.append("#" + node.getId() + ":");
+			
+		}
 
 		builder.append(this.createOperationSignature(operation));
 		AbstractGraphFormatter.formatDecorations(builder, node);
+		
+		if (TSSCommonUtils.isGraphSQLTableNode((DependencyGraphNode<AllocationComponentOperationPair>)node)) {
+			
+			return builder.substring(0, builder.lastIndexOf("("));
+			
+		}
 
 		return builder.toString();
 	}

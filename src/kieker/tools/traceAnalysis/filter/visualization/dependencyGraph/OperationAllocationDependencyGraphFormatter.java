@@ -161,7 +161,7 @@ public class OperationAllocationDependencyGraphFormatter extends AbstractOperati
 							DotFactory.DOT_STYLE_FILLED, // style
 							AbstractGraphFormatter.getDotRepresentation(node.getColor()), // framecolor
 							AbstractDependencyGraphFormatter.getNodeFillColor(node), // fillcolor
-							null, // fontcolor
+							AbstractGraphFormatter.getDotRepresentation(node.getColor()), // fontcolor
 							DotFactory.DOT_DEFAULT_FONTSIZE, // fontsize
 							null, // imagefilename
 							null, // misc

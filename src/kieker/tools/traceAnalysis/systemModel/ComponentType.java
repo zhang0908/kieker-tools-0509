@@ -29,8 +29,8 @@ import java.util.Collections;
  */
 public class ComponentType {
 	private final int id;
-	private final String packageName;
-	private final String typeName;
+	private String packageName;
+	private String typeName;
 	private final Collection<Operation> operations = Collections.synchronizedList(new ArrayList<Operation>());
 
 	/**
@@ -152,5 +152,13 @@ public class ComponentType {
 		}
 		final ComponentType other = (ComponentType) obj;
 		return other.id == this.id;
+	}
+	
+	public void setPackageName(String packageName) {
+		this.packageName = packageName;
+	}
+
+	public void setTypeName(String typeName) {
+		this.typeName = typeName;
 	}
 }

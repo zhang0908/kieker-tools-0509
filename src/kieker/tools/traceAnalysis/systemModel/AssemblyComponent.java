@@ -25,7 +25,7 @@ package kieker.tools.traceAnalysis.systemModel;
 public class AssemblyComponent implements ISystemModelElement {
 	private final int id;
 	private final String name;
-	private final ComponentType type;
+	private ComponentType type;
 
 	/**
 	 * Creates a new instance of this class using the given parameters.
@@ -53,6 +53,10 @@ public class AssemblyComponent implements ISystemModelElement {
 
 	public final ComponentType getType() {
 		return this.type;
+	}
+	
+	public void setType(ComponentType type) {
+		this.type = type;
 	}
 
 	@Override

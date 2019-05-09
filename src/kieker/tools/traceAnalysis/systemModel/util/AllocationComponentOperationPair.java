@@ -31,7 +31,7 @@ public class AllocationComponentOperationPair implements ISystemModelElement {
 	private final int id;
 	private final Operation operation;
 
-	private final AllocationComponent allocationComponent;
+	private AllocationComponent allocationComponent;
 
 	/**
 	 * Creates a new instance of this class using the given parameters.
@@ -55,6 +55,10 @@ public class AllocationComponentOperationPair implements ISystemModelElement {
 
 	public final AllocationComponent getAllocationComponent() {
 		return this.allocationComponent;
+	}
+
+	public void setAllocationComponent(AllocationComponent allocationComponent) {
+		this.allocationComponent = allocationComponent;
 	}
 
 	public final Operation getOperation() {
