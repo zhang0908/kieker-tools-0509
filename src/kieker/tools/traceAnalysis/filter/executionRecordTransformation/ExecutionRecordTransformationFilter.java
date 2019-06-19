@@ -86,7 +86,7 @@ public class ExecutionRecordTransformationFilter extends AbstractTraceAnalysisFi
 
 		final Execution execution = this.createExecutionByEntityNames(execRec.getHostname(), fqComponentNameSignaturePair.getFqClassname(),
 				fqComponentNameSignaturePair.getSignature(),
-				execRec.getTraceId(), execRec.getSessionId(), execRec.getEoi(), execRec.getEss(), execRec.getTin(), execRec.getTout(), false);
+				execRec.getTraceId(), execRec.getSessionId(), execRec.getEoi(), execRec.getEss(), execRec.getTin(), execRec.getTout(), false, execRec.getModuleName());
 		super.deliver(OUTPUT_PORT_NAME_EXECUTIONS, execution);
 	}
 

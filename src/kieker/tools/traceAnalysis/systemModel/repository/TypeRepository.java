@@ -32,7 +32,7 @@ import kieker.tools.traceAnalysis.systemModel.ComponentType;
 public class TypeRepository extends AbstractSystemSubRepository {
 
 	/** This constant represents the root component. */
-	public static final ComponentType ROOT_COMPONENT = new ComponentType(AbstractSystemSubRepository.ROOT_ELEMENT_ID, SystemModelRepository.ROOT_NODE_LABEL);
+	public static final ComponentType ROOT_COMPONENT = new ComponentType(AbstractSystemSubRepository.ROOT_ELEMENT_ID, SystemModelRepository.ROOT_NODE_LABEL, "");
 
 	private final Map<String, ComponentType> componentTypesByName = new Hashtable<String, ComponentType>(); // NOPMD (UseConcurrentHashMap)
 	private final Map<Integer, ComponentType> componentTypesById = new Hashtable<Integer, ComponentType>(); // NOPMD (UseConcurrentHashMap)
@@ -72,14 +72,14 @@ public class TypeRepository extends AbstractSystemSubRepository {
 	 * 
 	 * @return the created component type
 	 */
-	public final ComponentType createAndRegisterComponentType(final String namedIdentifier, final String fullqualifiedName) {
+	public final ComponentType createAndRegisterComponentType(final String namedIdentifier, final String fullqualifiedName, String moduleName) {
 		final ComponentType newInst;
 		synchronized (this) {
 			if (this.componentTypesByName.containsKey(namedIdentifier)) {
 				throw new IllegalArgumentException("Element with name " + namedIdentifier + "exists already");
 			}
 			final int id = this.getAndIncrementNextId();
-			newInst = new ComponentType(id, fullqualifiedName);
+			newInst = new ComponentType(id, fullqualifiedName, moduleName);
 			this.componentTypesById.put(id, newInst);
 			this.componentTypesByName.put(namedIdentifier, newInst);
 		}

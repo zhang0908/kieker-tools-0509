@@ -18,7 +18,7 @@ package kieker.tools.traceAnalysis.filter.visualization.dependencyGraph;
 
 import kieker.common.util.signature.Signature;
 import kieker.tools.traceAnalysis.filter.visualization.AbstractGraphFormatter;
-import kieker.tools.traceAnalysis.filter.visualization.util.dot.TSSCommonUtils;
+import kieker.tools.traceAnalysis.filter.visualization.graphdivide.util.TSSCommonUtils;
 import kieker.tools.traceAnalysis.systemModel.Operation;
 import kieker.tools.traceAnalysis.systemModel.util.AllocationComponentOperationPair;
 

@@ -26,9 +26,9 @@ import java.util.List;
  * 所以中间节点集中点互相间的联系度是大于st到中间点集的联系度的，而最后加入的点t的联系度是最小的，
  * 所以最小割即为这个点的联系度，即为s通过中间节点集到t的流量加上s直接到t的流量。所以就证明了每次拓展求出的是s-t的最小割。
  */
-public class GraphDivisionStoerWagner {
+public class AlgorithmStoerWagner {
 	
-	public static int stoerWagner2(int[][] G, boolean[] vaildVs, List<Integer> partAList, List<Integer> partBList){
+	public static int stoerWagner2(double[][] G, boolean[] vaildVs, List<Integer> partAList, List<Integer> partBList){
 		
 		int last = -1;
 		
@@ -125,7 +125,7 @@ public class GraphDivisionStoerWagner {
     }
 
 
-    public static int stoerWagner(int[][] G, int vNum, List<Integer> partAList, List<Integer> partBList){
+    public static int stoerWagner(double[][] G, int vNum, List<Integer> partAList, List<Integer> partBList){
         int[] V = new int[vNum];    // v[i]代表节点i合并到的顶点
         int[] w;    // 定义w(A,x) = ∑w(v[i],x)，v[i]∈A
         boolean[] visited;    //用来标记是否该点加入了A集合
@@ -233,7 +233,7 @@ public class GraphDivisionStoerWagner {
 	 }
 
     public static void main(String[] args) {
-        int G[][] = new int[9][9];
+    	double G[][] = new double[9][9];
         G[0][1] = 3;
         G[0][2] = 3;
         G[0][3] = 3;
@@ -262,7 +262,7 @@ public class GraphDivisionStoerWagner {
         
         int graph[][] = mockGraph2();
         
-        GraphDivisionStoerWagner sw = new GraphDivisionStoerWagner();
+        AlgorithmStoerWagner sw = new AlgorithmStoerWagner();
         List<Integer> partAList = new ArrayList<Integer>();
         List<Integer> partBList = new ArrayList<Integer>();
 //        sw.stoerWagner(graph, 9, partAList, partBList);

@@ -31,6 +31,7 @@ public class ComponentType {
 	private final int id;
 	private String packageName;
 	private String typeName;
+	private String moduleName;
 	private final Collection<Operation> operations = Collections.synchronizedList(new ArrayList<Operation>());
 
 	/**
@@ -43,10 +44,11 @@ public class ComponentType {
 	 * @param typeName
 	 *            The type name.
 	 */
-	public ComponentType(final int id, final String packageName, final String typeName) {
+	public ComponentType(final int id, final String packageName, final String typeName, final String moduleName) {
 		this.id = id;
 		this.packageName = packageName;
 		this.typeName = typeName;
+		this.moduleName = moduleName;
 	}
 
 	/**
@@ -57,7 +59,7 @@ public class ComponentType {
 	 * @param fullqualifiedTypeName
 	 *            The fully qualified name of the type, separated with '.'.
 	 */
-	public ComponentType(final int id, final String fullqualifiedTypeName) {
+	public ComponentType(final int id, final String fullqualifiedTypeName, final String moduleName) {
 		this.id = id;
 		String tmpPackagName;
 		String tmpTypeName;
@@ -77,6 +79,7 @@ public class ComponentType {
 		}
 		this.packageName = tmpPackagName;
 		this.typeName = tmpTypeName;
+		this.moduleName = moduleName;
 	}
 
 	/**
@@ -160,5 +163,13 @@ public class ComponentType {
 
 	public void setTypeName(String typeName) {
 		this.typeName = typeName;
+	}
+	
+	public String getModuleName() {
+		return moduleName;
+	}
+
+	public void setModuleName(String moduleName) {
+		this.moduleName = moduleName;
 	}
 }

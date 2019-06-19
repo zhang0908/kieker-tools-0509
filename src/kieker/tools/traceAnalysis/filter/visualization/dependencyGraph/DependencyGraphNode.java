@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import kieker.tools.traceAnalysis.filter.visualization.graph.AbstractPayloadedVertex;
 import kieker.tools.traceAnalysis.filter.visualization.graph.AbstractVertexDecoration;
+import kieker.tools.traceAnalysis.filter.visualization.graph.EdgeType;
 import kieker.tools.traceAnalysis.filter.visualization.graph.IOriginRetentionPolicy;
 import kieker.tools.traceAnalysis.systemModel.ISystemModelElement;
 import kieker.tools.traceAnalysis.systemModel.TraceInformation;
@@ -155,7 +156,7 @@ public class DependencyGraphNode<T extends ISystemModelElement> extends
 	}
 	
 	public void addOutgoingDependencyByFudan(final DependencyGraphNode<T> destination, final boolean isAssumed, final TraceInformation origin,
-			final IOriginRetentionPolicy originPolicy, final int newWeightValue) {
+			final IOriginRetentionPolicy originPolicy, final int newWeightValue, final EdgeType edgeType) {
 		synchronized (this) {
 			final Map<Integer, WeightedBidirectionalDependencyGraphEdge<T>> relevantDependencies = // NOPMD(UseConcurrentHashMap)
 			isAssumed ? this.assumedOutgoingDependencies : this.outgoingDependencies; // NOCS (inline ?)
@@ -173,6 +174,8 @@ public class DependencyGraphNode<T extends ISystemModelElement> extends
 				originPolicy.handleOrigin(e, origin);
 			}
 			e.getTargetWeight().set(newWeightValue);
+			e.getEdgeTypeComponent().setEdgeType(edgeType);
+			e.getEdgeTypeComponent().getConnectTimes().set(1);
 		}
 	}
 
@@ -220,7 +223,7 @@ public class DependencyGraphNode<T extends ISystemModelElement> extends
 	}
 	
 	public void addIncomingDependencyByFudan(final DependencyGraphNode<T> source, final boolean isAssumed, final TraceInformation origin,
-			final IOriginRetentionPolicy originPolicy, int weight) {
+			final IOriginRetentionPolicy originPolicy, int weight, final EdgeType edgeType) {
 		synchronized (this) {
 			final Map<Integer, WeightedBidirectionalDependencyGraphEdge<T>> relevantDependencies = // NOPMD(UseConcurrentHashMap)
 			isAssumed ? this.assumedIncomingDependencies : this.incomingDependencies; // NOCS (inline ?)
@@ -233,6 +236,8 @@ public class DependencyGraphNode<T extends ISystemModelElement> extends
 				originPolicy.handleOrigin(e, origin);
 			}
 			e.getTargetWeight().set(weight);
+			e.getEdgeTypeComponent().setEdgeType(edgeType);
+			e.getEdgeTypeComponent().getConnectTimes().set(1);
 		}
 	}
 

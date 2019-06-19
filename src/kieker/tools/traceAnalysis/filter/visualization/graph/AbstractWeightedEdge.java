@@ -38,7 +38,9 @@ public abstract class AbstractWeightedEdge<V extends AbstractVertex<V, E, O>, E 
 	private final AtomicInteger sourceWeight = new AtomicInteger();
 	private final AtomicInteger targetWeight = new AtomicInteger();
 	private final AtomicInteger weight = new AtomicInteger();
+	private EdgeTypeComponent edgeTypeComponent = new EdgeTypeComponent();
 
+	
 	/**
 	 * Creates a new weighted edge between the given vertices.
 	 * 
@@ -80,6 +82,21 @@ public abstract class AbstractWeightedEdge<V extends AbstractVertex<V, E, O>, E 
 	 */
 	public AtomicInteger getWeight() {
 		return this.weight;
+	}
+
+	public EdgeTypeComponent getEdgeTypeComponent() {
+		
+		if (edgeTypeComponent == null) {
+			
+			edgeTypeComponent = new EdgeTypeComponent();
+			
+		}
+		
+		return edgeTypeComponent;
+	}
+
+	public void setEdgeTypeComponent(EdgeTypeComponent edgeTypeComponent) {
+		this.edgeTypeComponent = edgeTypeComponent;
 	}
 
 }

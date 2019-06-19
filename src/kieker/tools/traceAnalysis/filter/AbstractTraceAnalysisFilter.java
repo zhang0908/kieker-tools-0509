@@ -69,6 +69,55 @@ public abstract class AbstractTraceAnalysisFilter extends AbstractFilterPlugin {
 	public static final Execution createExecutionByEntityNames(final SystemModelRepository systemModelRepository,
 			final String executionContainerName, final String assemblyComponentTypeName, final String componentTypeName,
 			final Signature operationSignature, final long traceId, final String sessionId, final int eoi, final int ess,
+			final long tin, final long tout, final boolean assumed, final String domainName) {
+		final String allocationComponentName = new StringBuilder(executionContainerName).append("::").append(assemblyComponentTypeName).toString();
+		final String operationFactoryName = new StringBuilder(componentTypeName).append(".").append(operationSignature).toString();
+
+		if (operationSignature.toString().indexOf("cms_article_data1111") != -1) {
+			
+			System.out.println("asdfsadf");
+			
+		}
+		
+		AllocationComponent allocInst = systemModelRepository.getAllocationFactory()
+				.lookupAllocationComponentInstanceByNamedIdentifier(allocationComponentName);
+		if (allocInst == null) { // Allocation component instance doesn't exist
+			AssemblyComponent assemblyComponent = systemModelRepository.getAssemblyFactory()
+					.lookupAssemblyComponentInstanceByNamedIdentifier(assemblyComponentTypeName);
+			if (assemblyComponent == null) { // assembly instance doesn't exist
+				ComponentType componentType = systemModelRepository.getTypeRepositoryFactory().lookupComponentTypeByNamedIdentifier(assemblyComponentTypeName);
+				if (componentType == null) { // NOPMD NOCS (NestedIf)
+					// Component type doesn't exist
+					componentType = systemModelRepository.getTypeRepositoryFactory().createAndRegisterComponentType(assemblyComponentTypeName,
+							assemblyComponentTypeName, domainName);
+				}
+				assemblyComponent = systemModelRepository.getAssemblyFactory()
+						.createAndRegisterAssemblyComponentInstance(assemblyComponentTypeName, componentType);
+			}
+			ExecutionContainer execContainer = systemModelRepository.getExecutionEnvironmentFactory()
+					.lookupExecutionContainerByNamedIdentifier(executionContainerName);
+			if (execContainer == null) { // doesn't exist, yet
+				execContainer = systemModelRepository.getExecutionEnvironmentFactory()
+						.createAndRegisterExecutionContainer(executionContainerName, executionContainerName);
+			}
+			allocInst = systemModelRepository.getAllocationFactory()
+					.createAndRegisterAllocationComponentInstance(allocationComponentName, assemblyComponent, execContainer);
+		}
+
+		Operation op = systemModelRepository.getOperationFactory().lookupOperationByNamedIdentifier(operationFactoryName);
+		if (op == null) { // Operation doesn't exist
+			operationSignature.setDomainName(domainName);
+			op = systemModelRepository.getOperationFactory()
+					.createAndRegisterOperation(operationFactoryName, allocInst.getAssemblyComponent().getType(), operationSignature);
+			allocInst.getAssemblyComponent().getType().addOperation(op);
+		}
+
+		return new Execution(op, allocInst, traceId, sessionId, eoi, ess, tin, tout, assumed);
+	}
+	
+	public static final Execution createExecutionByEntityNames(final SystemModelRepository systemModelRepository,
+			final String executionContainerName, final String assemblyComponentTypeName, final String componentTypeName,
+			final Signature operationSignature, final long traceId, final String sessionId, final int eoi, final int ess,
 			final long tin, final long tout, final boolean assumed) {
 		final String allocationComponentName = new StringBuilder(executionContainerName).append("::").append(assemblyComponentTypeName).toString();
 		final String operationFactoryName = new StringBuilder(componentTypeName).append(".").append(operationSignature).toString();
@@ -83,7 +132,7 @@ public abstract class AbstractTraceAnalysisFilter extends AbstractFilterPlugin {
 				if (componentType == null) { // NOPMD NOCS (NestedIf)
 					// Component type doesn't exist
 					componentType = systemModelRepository.getTypeRepositoryFactory().createAndRegisterComponentType(assemblyComponentTypeName,
-							assemblyComponentTypeName);
+							assemblyComponentTypeName, "");
 				}
 				assemblyComponent = systemModelRepository.getAssemblyFactory()
 						.createAndRegisterAssemblyComponentInstance(assemblyComponentTypeName, componentType);
@@ -125,9 +174,9 @@ public abstract class AbstractTraceAnalysisFilter extends AbstractFilterPlugin {
 
 	protected final Execution createExecutionByEntityNames(final String executionContainerName, final String assemblyComponentTypeName,
 			final Signature operationSignature, final long traceId, final String sessionId, final int eoi, final int ess,
-			final long tin, final long tout, final boolean assumed) {
+			final long tin, final long tout, final boolean assumed, String moduleName) {
 		return AbstractTraceAnalysisFilter.createExecutionByEntityNames(this.getSystemEntityFactory(), executionContainerName, assemblyComponentTypeName,
-				assemblyComponentTypeName, operationSignature, traceId, sessionId, eoi, ess, tin, tout, assumed);
+				assemblyComponentTypeName, operationSignature, traceId, sessionId, eoi, ess, tin, tout, assumed, moduleName);
 	}
 
 	/**

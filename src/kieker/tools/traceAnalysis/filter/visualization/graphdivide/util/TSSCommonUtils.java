@@ -1,4 +1,4 @@
-package kieker.tools.traceAnalysis.filter.visualization.util.dot;
+package kieker.tools.traceAnalysis.filter.visualization.graphdivide.util;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -11,13 +11,15 @@ import kieker.tools.traceAnalysis.systemModel.util.AllocationComponentOperationP
 
 public class TSSCommonUtils {
 
-	public final static String DEFAULT_GRAPH_EDGE_WEIGHT_VALUE_SAME_SQL = "100";
-	public final static String DEFAULT_GRAPH_EDGE_WEIGHT_VALUE_SAME_API = "50";
-	public final static String DEFAULT_GRAPH_EDGE_WEIGHT_VALUE_SAME_SCENE = "10";
+	public final static String DEFAULT_GRAPH_EDGE_WEIGHT_VALUE_SAME_DOMAIN = "300";
+	public final static String DEFAULT_GRAPH_EDGE_WEIGHT_VALUE_SAME_SQL = "200";
+	public final static String DEFAULT_GRAPH_EDGE_WEIGHT_VALUE_SAME_API = "10";
+	public final static String DEFAULT_GRAPH_EDGE_WEIGHT_VALUE_SAME_SCENE = "0";
 	public final static String DEFAULT_GRAPH_MINCUT_THRESHOLD = "500";
 	public final static String DEFAULT_LABLE_CONTAINER_CLASS_FUNCTION_LOWERCASE = "class-function";
 	public final static String DEFAULT_LABLE_CONTAINER_DATABASE_LOWERCASE = "database-sql";
 	
+	public final static String LABEL_GRAPH_EDGE_WEIGHT_VALUE_SAME_DOMAIN = "graph.edge.weight.value.same.domain";
 	public final static String LABEL_GRAPH_EDGE_WEIGHT_VALUE_SAME_SQL = "graph.edge.weight.value.same.sql";
 	public final static String LABEL_GRAPH_EDGE_WEIGHT_VALUE_SAME_API = "graph.edge.weight.value.same.api";
 	public final static String LABEL_GRAPH_EDGE_WEIGHT_VALUE_SAME_SCENE = "graph.edge.weight.value.same.scene";
@@ -31,7 +33,12 @@ public class TSSCommonUtils {
 	public final static String LABEL_IS_SHOW_LINK_BETWEEN_SQLTABLE_NODE = "show.link.between.sqltable.node";
 	public final static String LABLE_TSS_DIVIDE_ALGORITHM = "lable.tss.divide.algorithm";
 	public final static String TSS_DIVIDE_ALGORITHM_STOERWAGNER = "StoerWagner";
-	public final static String TSS_DIVIDE_ALGORITHM_CLUSTERKMEANS = "ClusterKMeans";
+	public final static String TSS_DIVIDE_ALGORITHM_CLUSTER_KMEANS = "ClusterKMeans";
+	public final static String TSS_DIVIDE_ALGORITHM_CLUSTER_SPECTRAL = "ClusterSpectral";
+	
+	public static final String LABEL_FILTER_SQL_TABLE_NAMES = "filter.sql.table.names";
+	
+	public final static String LABEL_SQL_TABLE_NODE_PACKAGE_NAME_MICROSERVICE = "label.sqltable.node.package.name.microservice";
 	
 	private static String[] COLOR_RGB_LIST = {"FF83FA", "FF0000", "EE7AE9", "CDCD00", "BF3EFF", "B3EE3A", "A020F0", "8FBC8F", "8B6914", "636363", "2E8B57", "191970"};
 	
@@ -146,8 +153,14 @@ public class TSSCommonUtils {
 		return Boolean.parseBoolean(divideProperties.getProperty(TSSCommonUtils.LABEL_ISSHOW_NODE_INDEX, "false"));
 		
 	}
+	
+	public static int getEdgeWeightValueUnderSameDoamin() {
+		
+		return Integer.parseInt(divideProperties.getProperty(TSSCommonUtils.LABEL_GRAPH_EDGE_WEIGHT_VALUE_SAME_DOMAIN, TSSCommonUtils.DEFAULT_GRAPH_EDGE_WEIGHT_VALUE_SAME_DOMAIN));
+	
+	}
 
-	public static int getEdgeWeightValueUnderSameSQLDao() {
+	public static int getEdgeWeightValueUnderSameSqlDao() {
 		
 		return Integer.parseInt(divideProperties.getProperty(TSSCommonUtils.LABEL_GRAPH_EDGE_WEIGHT_VALUE_SAME_SQL, TSSCommonUtils.DEFAULT_GRAPH_EDGE_WEIGHT_VALUE_SAME_SQL));
 	
@@ -165,11 +178,21 @@ public class TSSCommonUtils {
 		
 	}
 
-	public static void printRuntimeWarnMessage(String msg) {
+	public static void printlnRuntimeWarnMessage(String msg) {
 		
 		if (isPrintRuntimeWarnMsg) {
 			
 			System.out.println(String.format("%s", msg));
+			
+		}
+		
+	}
+	
+	public static void printRuntimeWarnMessage(String msg) {
+		
+		if (isPrintRuntimeWarnMsg) {
+			
+			System.out.print(String.format("%s", msg));
 			
 		}
 		
@@ -183,8 +206,47 @@ public class TSSCommonUtils {
 	
 	public static String getTssDivideAlgorithmName() {
 		
-		return divideProperties.getProperty(TSSCommonUtils.LABLE_TSS_DIVIDE_ALGORITHM, TSS_DIVIDE_ALGORITHM_CLUSTERKMEANS);
+		return divideProperties.getProperty(TSSCommonUtils.LABLE_TSS_DIVIDE_ALGORITHM, TSS_DIVIDE_ALGORITHM_CLUSTER_KMEANS);
 		
+	}
+
+	public static int getMinCutThresholdForStoerWagnerAlgorithm() {
+		
+		return Integer.parseInt(divideProperties.getProperty(TSSCommonUtils.LABEL_GRAPH_MINCUT_THRESHOLD, TSSCommonUtils.DEFAULT_GRAPH_MINCUT_THRESHOLD));
+		
+	}
+
+	public static String getSqlTableNodePackageNode() {
+		
+		return divideProperties.getProperty(TSSCommonUtils.LABEL_SQL_TABLE_NODE_PACKAGE_NAME_MICROSERVICE, "MicroService");
+		
+	}
+
+	public static int getMicroserviceNum() {
+		
+		return Integer.parseInt(divideProperties.getProperty(TSSCommonUtils.LABEL_DIVIDE_MICROSERVICE_NUM, TSSCommonUtils.DEFAULT_DIVIDE_MICROSERVICE_NUM));
+	
+	}
+
+	public static boolean isFilterSqlTableNode(String signature) {
+		
+		if (signature != null && (signature = signature.trim().toLowerCase()).length() > 0) {
+			
+			String[] filterTableNames = divideProperties.getProperty(TSSCommonUtils.LABEL_FILTER_SQL_TABLE_NAMES).split(",");
+			
+			for (String name : filterTableNames) {
+				
+				if (signature.equalsIgnoreCase(name.trim().toLowerCase() + "()")) {
+					
+					return true;
+					
+				}
+				
+			}
+			
+		}
+		
+		return false;
 	}
 
 }
